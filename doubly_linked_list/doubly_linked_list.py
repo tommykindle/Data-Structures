@@ -9,12 +9,18 @@ class ListNode:
         self.prev = prev
         self.value = value
         self.next = next
+    """
+    Rearranges this ListNode's previous ad next pointers
+    accordingly, effectively deleting this ListNode.
+    """
 
-
-"""
-Our doubly-linked list class. It holds references to
-the list's head and tail nodes.
-"""
+    def delete(self):
+        if self.prev:
+            next_node = self.prev
+            next_node.next = self.next
+        if self.next:
+            next_node = self.next
+            next_node.prev = self.prev
 
 
 class DoublyLinkedList:
@@ -106,7 +112,11 @@ class DoublyLinkedList:
     """
 
     def move_to_front(self, node):
-        pass
+        if node == self.head:
+            return
+        value = node.value
+        self.delete(node)
+        self.add_to_head(value)
 
     """
     Removes the input node from its current spot in the
@@ -114,7 +124,11 @@ class DoublyLinkedList:
     """
 
     def move_to_end(self, node):
-        pass
+        if node == self.tail:
+            return
+        value = node.value
+        self.delete(node)
+        self.add_to_tail(value)
 
     """
     Deletes the input node from the List, preserving the
@@ -122,7 +136,25 @@ class DoublyLinkedList:
     """
 
     def delete(self, node):
-        pass
+        self.length -= 1
+
+        if not self.head and not self.tail:
+            return
+
+        if self.head == self.tail and node == self.head:
+            self.head = None
+            self.tail = None
+
+        elif self.head == node:
+            self.head = self.head.next
+            node.delete()
+
+        elif self.tail == node:
+            self.tail = self.tail.prev
+            node.delete()
+
+        else:
+            node.delete()
 
     """
     Finds and returns the maximum value of all the nodes
@@ -130,4 +162,12 @@ class DoublyLinkedList:
     """
 
     def get_max(self):
-        pass
+        if not self.head:
+            return None
+        maxValue = self.head.value
+        visited = self.head.next
+        while visited:
+            if visited.value > maxValue:
+                maxValue = visited.value
+            visited = visited.next
+        return maxValue
